@@ -104,24 +104,14 @@ document.querySelector('[data-list-button]').addEventListener('click', () => {
     page += 1
 })
 
-document.querySelector('[data-list-items]').addEventListener('click', (event) => {
-    const pathArray = Array.from(event.path || event.composedPath())
-    let active = null
+    // Function to filter books based on given filters
+    filterBooks(book, filters) {
+        const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
+        const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
+        const authorMatch = filters.author === 'any' || book.author === filters.author;
 
-    for (const node of pathArray) {
-        if (active) break
-
-        if (node?.dataset?.preview) {
-            let result = null
-    
-            for (const singleBook of books) {
-                if (result) break;
-                if (singleBook.id === node?.dataset?.preview) result = singleBook
-            } 
-        
-            active = result
-        }
-    }
+        return titleMatch && authorMatch && genreMatch;
+    },
     
     if (active) {
         document.querySelector('[data-list-active]').open = true
