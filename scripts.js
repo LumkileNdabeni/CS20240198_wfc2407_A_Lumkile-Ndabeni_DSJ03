@@ -173,3 +173,8 @@ const BookApp = {
             document.documentElement.style.setProperty('--color-light', isNight ? '10, 10, 20' : '255, 255, 255');
         }
     };
+
+    // Initialize the application when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    BookApp.init();
+});
