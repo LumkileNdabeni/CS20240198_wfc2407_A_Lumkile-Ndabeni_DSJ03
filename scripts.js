@@ -119,3 +119,57 @@ const BookApp = {
             }
         }
     },
+
+        // Function to display details of the selected book
+        displayBookDetails(activeBook) {
+            document.querySelector('[data-list-active]').open = true;
+            document.querySelector('[data-list-blur]').src = activeBook.image;
+            document.querySelector('[data-list-image]').src = activeBook.image;
+            document.querySelector('[data-list-title]').innerText = activeBook.title;
+            document.querySelector('[data-list-subtitle]').innerText = `${authors[activeBook.author]} (${new Date(activeBook.published).getFullYear()})`;
+            document.querySelector('[data-list-description]').innerText = activeBook.description;
+        },
+    
+        // Function to setup event listeners
+        setupEventListeners() {
+            document.querySelector('[data-search-cancel]').addEventListener('click', () => {
+                document.querySelector('[data-search-overlay]').open = false;
+            });
+    
+            document.querySelector('[data-settings-cancel]').addEventListener('click', () => {
+                document.querySelector('[data-settings-overlay]').open = false;
+            });
+    
+            document.querySelector('[data-header-search]').addEventListener('click', () => {
+                document.querySelector('[data-search-overlay]').open = true;
+                document.querySelector('[data-search-title]').focus();
+            });
+    
+            document.querySelector('[data-header-settings]').addEventListener('click', () => {
+                document.querySelector('[data-settings-overlay]').open = true;
+            });
+    
+            document.querySelector('[data-list-close]').addEventListener('click', () => {
+                document.querySelector('[data-list-active]').open = false;
+            });
+    
+            document.querySelector('[data-settings-form]').addEventListener('submit', (event) => {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const { theme } = Object.fromEntries(formData);
+                this.applyTheme(theme);
+                document.querySelector('[data-settings-overlay]').open = false;
+            });
+    
+            document.querySelector('[data-search-form]').addEventListener('submit', this.handleSearchSubmit.bind(this));
+            document.querySelector('[data-list-button]').addEventListener('click', this.handleShowMoreClick.bind(this));
+            document.querySelector('[data-list-items]').addEventListener('click', this.handleBookPreviewClick.bind(this));
+        },
+    
+        // Function to apply the selected theme
+        applyTheme(theme) {
+            const isNight = theme === 'night';
+            document.documentElement.style.setProperty('--color-dark', isNight ? '255, 255, 255' : '10, 10, 20');
+            document.documentElement.style.setProperty('--color-light', isNight ? '10, 10, 20' : '255, 255, 255');
+        }
+    };
