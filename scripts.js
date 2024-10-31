@@ -63,28 +63,15 @@ const BookApp = {
         document.documentElement.style.setProperty('--color-light', isDarkMode ? '10, 10, 20' : '255, 255, 255');
     },
 
-document.querySelector('[data-search-form]').addEventListener('submit', (event) => {
-    event.preventDefault()
-    const formData = new FormData(event.target)
-    const filters = Object.fromEntries(formData)
-    const result = []
-
-    for (const book of books) {
-        let genreMatch = filters.genre === 'any'
-
-        for (const singleGenre of book.genres) {
-            if (genreMatch) break;
-            if (singleGenre === filters.genre) { genreMatch = true }
-        }
-
-        if (
-            (filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase())) && 
-            (filters.author === 'any' || book.author === filters.author) && 
-            genreMatch
-        ) {
-            result.push(book)
-        }
-    }
+    // Function to update the "Show more" button
+    updateShowMoreButton() {
+        const showMoreButton = document.querySelector('[data-list-button]');
+        const remainingBooks = this.matches.length - (this.page * BOOKS_PER_PAGE);
+        showMoreButton.innerHTML = `
+            <span>Show more</span>
+            <span class="list__remaining"> (${remainingBooks > 0 ? remainingBooks : 0})</span>`;
+        showMoreButton.disabled = remainingBooks <= 0;
+    },
 
     page = 1;
     matches = result
@@ -118,18 +105,6 @@ document.querySelector('[data-search-form]').addEventListener('submit', (event) 
         newItems.appendChild(element)
     }
 
-    document.querySelector('[data-list-items]').appendChild(newItems)
-    document.querySelector('[data-list-button]').disabled = (matches.length - (page * BOOKS_PER_PAGE)) < 1
-
-    document.querySelector('[data-list-button]').innerHTML = `
-        <span>Show more</span>
-        <span class="list__remaining"> (${(matches.length - (page * BOOKS_PER_PAGE)) > 0 ? (matches.length - (page * BOOKS_PER_PAGE)) : 0})</span>
-    `
-
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    document.querySelector('[data-search-overlay]').open = false
-})
-
 document.querySelector('[data-list-button]').addEventListener('click', () => {
     const fragment = document.createDocumentFragment()
 
@@ -138,20 +113,7 @@ document.querySelector('[data-list-button]').addEventListener('click', () => {
         element.classList = 'preview'
         element.setAttribute('data-preview', id)
     
-        element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `
-
-        fragment.appendChild(element)
-    }
+   
 
     document.querySelector('[data-list-items]').appendChild(fragment)
     page += 1
