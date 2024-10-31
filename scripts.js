@@ -73,37 +73,22 @@ const BookApp = {
         showMoreButton.disabled = remainingBooks <= 0;
     },
 
-    page = 1;
-    matches = result
+    // Function to handle search form submission
+    handleSearchSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const filters = Object.fromEntries(formData);
+        const result = books.filter(book => this.filterBooks(book, filters));
 
-    if (result.length < 1) {
-        document.querySelector('[data-list-message]').classList.add('list__message_show')
-    } else {
-        document.querySelector('[data-list-message]').classList.remove('list__message_show')
-    }
+        this.matches = result;
+        this.page = 1;
 
-    document.querySelector('[data-list-items]').innerHTML = ''
-    const newItems = document.createDocumentFragment()
-
-    for (const { author, id, image, title } of result.slice(0, BOOKS_PER_PAGE)) {
-        const element = document.createElement('button')
-        element.classList = 'preview'
-        element.setAttribute('data-preview', id)
-    
-        element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `
-
-        newItems.appendChild(element)
-    }
+        document.querySelector('[data-list-message]').classList.toggle('list__message_show', result.length < 1);
+        this.populateBookPreviews(result.slice(0, BOOKS_PER_PAGE));
+        this.updateShowMoreButton();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.querySelector('[data-search-overlay]').open = false;
+    },
 
 document.querySelector('[data-list-button]').addEventListener('click', () => {
     const fragment = document.createDocumentFragment()
