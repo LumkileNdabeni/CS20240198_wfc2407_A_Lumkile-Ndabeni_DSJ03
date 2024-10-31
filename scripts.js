@@ -23,20 +23,17 @@ const BookApp = {
         listContainer.appendChild(fragment);
     },
 
-document.querySelector('[data-search-genres]').appendChild(genreHtml)
-
-const authorsHtml = document.createDocumentFragment()
-const firstAuthorElement = document.createElement('option')
-firstAuthorElement.value = 'any'
-firstAuthorElement.innerText = 'All Authors'
-authorsHtml.appendChild(firstAuthorElement)
-
-for (const [id, name] of Object.entries(authors)) {
-    const element = document.createElement('option')
-    element.value = id
-    element.innerText = name
-    authorsHtml.appendChild(element)
-}
+    // Function to populate dropdown menus for genres and authors
+    populateDropdowns() {
+        this.populateDropdown('[data-search-genres]', {
+            firstOptionText: 'All Genres',
+            items: genres,
+        });
+        this.populateDropdown('[data-search-authors]', {
+            firstOptionText: 'All Authors',
+            items: authors,
+        });
+    },
 
 document.querySelector('[data-search-authors]').appendChild(authorsHtml)
 
