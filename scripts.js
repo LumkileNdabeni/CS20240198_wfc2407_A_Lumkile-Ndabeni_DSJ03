@@ -90,19 +90,6 @@ const BookApp = {
         document.querySelector('[data-search-overlay]').open = false;
     },
 
-document.querySelector('[data-list-button]').addEventListener('click', () => {
-    const fragment = document.createDocumentFragment()
-
-    for (const { author, id, image, title } of matches.slice(page * BOOKS_PER_PAGE, (page + 1) * BOOKS_PER_PAGE)) {
-        const element = document.createElement('button')
-        element.classList = 'preview'
-        element.setAttribute('data-preview', id)
-    
-   
-
-    document.querySelector('[data-list-items]').appendChild(fragment)
-    page += 1
-})
 
     // Function to filter books based on given filters
     filterBooks(book, filters) {
@@ -112,13 +99,23 @@ document.querySelector('[data-list-button]').addEventListener('click', () => {
 
         return titleMatch && authorMatch && genreMatch;
     },
-    
-    if (active) {
-        document.querySelector('[data-list-active]').open = true
-        document.querySelector('[data-list-blur]').src = active.image
-        document.querySelector('[data-list-image]').src = active.image
-        document.querySelector('[data-list-title]').innerText = active.title
-        document.querySelector('[data-list-subtitle]').innerText = `${authors[active.author]} (${new Date(active.published).getFullYear()})`
-        document.querySelector('[data-list-description]').innerText = active.description
-    }
-})
+       // Function to handle the "Show more" button click
+       handleShowMoreClick() {
+        const nextBooks = this.matches.slice(this.page * BOOKS_PER_PAGE, (this.page + 1) * BOOKS_PER_PAGE);
+        this.populateBookPreviews(nextBooks);
+        this.page++;
+        this.updateShowMoreButton();
+    },
+
+    // Function to handle individual book preview clicks
+    handleBookPreviewClick(event) {
+        const pathArray = Array.from(event.composedPath());
+        const activeNode = pathArray.find(node => node?.dataset?.preview);
+        
+        if (activeNode) {
+            const activeBook = books.find(book => book.id === activeNode.dataset.preview);
+            if (activeBook) {
+                this.displayBookDetails(activeBook);
+            }
+        }
+    },
