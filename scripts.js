@@ -14,20 +14,14 @@ const BookApp = {
     },
 
 
-document.querySelector('[data-list-items]').appendChild(starting)
-
-const genreHtml = document.createDocumentFragment()
-const firstGenreElement = document.createElement('option')
-firstGenreElement.value = 'any'
-firstGenreElement.innerText = 'All Genres'
-genreHtml.appendChild(firstGenreElement)
-
-for (const [id, name] of Object.entries(genres)) {
-    const element = document.createElement('option')
-    element.value = id
-    element.innerText = name
-    genreHtml.appendChild(element)
-}
+    // Function to populate book previews on the page
+    populateBookPreviews(bookList) {
+        const fragment = document.createDocumentFragment();
+        bookList.forEach(book => fragment.appendChild(this.createBookPreviewElement(book)));
+        const listContainer = document.querySelector('[data-list-items]');
+        listContainer.innerHTML = ''; // Clear previous items
+        listContainer.appendChild(fragment);
+    },
 
 document.querySelector('[data-search-genres]').appendChild(genreHtml)
 
